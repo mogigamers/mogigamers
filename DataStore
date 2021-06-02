@@ -1,0 +1,57 @@
+
+
+local DataStoreService = game:GetService("DataStoreService")
+local myDataStore = DataStoreService:GetOrderedDataStore("myDataStore")
+
+game.Players.PlayerAdded:Connect(function(player)
+	
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Name = "leaderstats"
+	leaderstats.Parent = player
+	
+	local Cash = Instance.new("IntValue")
+	Cash.Name = "Cash"
+	Cash.Parent = leaderstats
+	
+	
+	local playerUserId = "Player_"..player.UserId
+	
+	--Load Data
+	local data
+	local success, errormessage = pcall(function()
+		data = myDataStore:GetAsync(playerUserId)
+	end)
+	
+	if success then
+		
+		Cash.Value = data
+		-- Set our data equal top cash
+		
+		while true do
+			wait(5)
+			Cash.Value = Cash.Value + 3
+		end
+	end
+	
+	
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+	local playerUserId = "Player_"..player.UserId
+	
+	local data = player.leaderstats.Cash.Value
+	
+	local success, errormessage = pcall(function()
+		myDataStore:SetAsync(playerUserId, data)
+	end)
+	
+	if success then
+		print("Data_Stored_Success1")
+		
+	else
+		print("Data_Stored_Error_!")
+		warn(errormessage)
+	end
+	
+end)
+
